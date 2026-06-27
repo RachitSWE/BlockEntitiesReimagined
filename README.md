@@ -53,6 +53,7 @@ We currently optimize the rendering of the following entities:
 6. **🔔 Bells**
 7. **📦 Shulker Boxes**
 8. **🤖 Copper Golem Statues**
+9. **📖 Lecterns**
 
 ---
 
