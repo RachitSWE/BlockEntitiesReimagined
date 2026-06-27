@@ -1,24 +1,44 @@
-# Reference Dumps
-.gemini/
-GEMINI.md
+# gradle
 
-# Gradle Build Files
 .gradle/
 build/
 out/
+classes/
 
-# IDE Configuration
+# eclipse
+
+*.launch
+
+# idea
+
 .idea/
 *.iml
 *.ipr
 *.iws
+
+# vscode
+
+.settings/
 .vscode/
-
-# Logs & Binaries
-*.log
 bin/
-*.class
+.classpath
+.project
 
-# OS Files
-.DS_Store
-Thumbs.db
+# macos
+
+*.DS_Store
+
+# fabric
+
+run/
+
+# java
+
+hs_err_*.log
+replay_*.log
+*.hprof
+*.jfr
+
+# misc
+GEMINI.md 
+.gemini/

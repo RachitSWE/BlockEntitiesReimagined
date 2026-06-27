@@ -44,7 +44,7 @@ import net.caffeinemc.mods.sodium.api.config.ConfigEntryPoint;
 
 /* minecraft */
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 ```
 
 ### 2.2 Builder Patterns and Chaining
@@ -54,7 +54,7 @@ When using builder patterns (especially for configs or rendering pipelines), eac
 ```java
 BBERenderPage.addOptionGroup(builder.createOptionGroup()
         .addOption(
-                builder.createBooleanOption(Identifier.parse("ber:optimize.chest"))
+                builder.createBooleanOption(ResourceLocation.parse("ber:optimize.chest"))
                         .setName(Component.translatable("ber.config.storage.main.optimize.chest"))
                         .setTooltip(Component.translatable("ber.config.storage.main.optimize.chest.tooltip"))
                         .setDefaultValue(true)
@@ -64,7 +64,7 @@ BBERenderPage.addOptionGroup(builder.createOptionGroup()
                                 () -> (boolean) BER.GlobalScope.CONFIG.MAIN.getOption("optimize.chest").getValue()
                         )
                         .setEnabledProvider(c ->
-                                c.readBooleanOption(Identifier.parse("ber:master")), Identifier.parse("ber:master")
+                                c.readBooleanOption(ResourceLocation.parse("ber:master")), ResourceLocation.parse("ber:master")
                         )
                         .setFlags(OptionFlag.REQUIRES_ASSET_RELOAD)
                         .setStorageHandler(this.saveMainConfigStorageObject)
@@ -165,7 +165,7 @@ We recommend IntelliJ IDEA for developing BER.
 1. Clone the repository.
 2. Run `./gradlew genSources` to map the Minecraft source code.
 3. Run `./gradlew idea` if using an older version of IntelliJ.
-4. Set up your run configurations using `./gradlew vscode`.
+4. Set up IDE run configurations.
 
 ### 5.1 Required IDE Plugins
 - **Minecraft Development:** Essential for Mixin validation.

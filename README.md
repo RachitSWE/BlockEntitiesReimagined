@@ -2,7 +2,7 @@
 
 ![Fabric](https://img.shields.io/badge/Modloader-Fabric-orange?style=for-the-badge&logo=fabric)
 ![Minecraft](https://img.shields.io/badge/Minecraft-1.20+-green?style=for-the-badge&logo=minecraft)
-![License](https://img.shields.io/badge/License-All%20Rights%20Reserved-red?style=for-the-badge)
+![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
 
 Welcome to **Block Entities Reimagined**, a from-scratch, clean-room Fabric mod designed to fundamentally overhaul the rendering pipeline for Minecraft's most demanding blocks. 
 
