@@ -3,20 +3,17 @@ package blockentitiesreimagined.client.render.pool;
 /* java */
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.ArrayBlockingQueue;
 
 public final class BERBufferPool {
     private static final int CAPACITY = 262144; // 256KB
     private static final int MAX_POOL_SIZE = Math.max(16, Runtime.getRuntime().availableProcessors() * 4);
     
-    private static final ConcurrentLinkedQueue<ByteBuffer> POOL = new ConcurrentLinkedQueue<>();
-    private static final AtomicInteger CURRENT_SIZE = new AtomicInteger(0);
+    private static final ArrayBlockingQueue<ByteBuffer> POOL = new ArrayBlockingQueue<>(MAX_POOL_SIZE);
 
     static {
         for (int i = 0; i < MAX_POOL_SIZE; i++) {
             POOL.offer(ByteBuffer.allocateDirect(CAPACITY).order(ByteOrder.nativeOrder()));
-            CURRENT_SIZE.incrementAndGet();
         }
     }
 
@@ -25,7 +22,6 @@ public final class BERBufferPool {
     public static ByteBuffer acquire() {
         ByteBuffer buffer = POOL.poll();
         if (buffer != null) {
-            CURRENT_SIZE.decrementAndGet();
             buffer.clear();
             return buffer;
         }
@@ -34,10 +30,7 @@ public final class BERBufferPool {
     }
 
     public static void release(ByteBuffer buffer) {
-        if (CURRENT_SIZE.get() < MAX_POOL_SIZE) {
-            POOL.offer(buffer);
-            CURRENT_SIZE.incrementAndGet();
-        }
-        // If the pool is already at capacity, we just let the buffer fall out of scope for GC.
+        POOL.offer(buffer);
+        // If the pool is already at capacity, offer returns false and the buffer falls out of scope for GC.
     }
 }

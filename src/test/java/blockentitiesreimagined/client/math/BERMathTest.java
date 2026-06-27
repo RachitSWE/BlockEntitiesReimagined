@@ -94,9 +94,8 @@ public class BERMathTest {
     }
 
     @Test
-    public void testGetStackDoesNotClearState() {
+    public void testGetStackClearsState() {
         BERMath.MatrixStack stack1 = BERMath.getStack();
-        stack1.clear();
         
         stack1.peek().translate(5.0f, 5.0f, 5.0f);
         stack1.push();
@@ -104,10 +103,12 @@ public class BERMathTest {
         BERMath.MatrixStack stack2 = BERMath.getStack();
         Assertions.assertSame(stack1, stack2, "getStack() should return the same instance for the same thread");
         
-        // Assert that the state was not cleared
-        Assertions.assertEquals(5.0f, stack2.peek().m30(), 1e-6, "Translation X should persist");
+        // Assert that the state was cleared
+        Assertions.assertEquals(0.0f, stack2.peek().m30(), 1e-6, "Translation X should be cleared");
         
-        // Pop the state added earlier to clean up
-        stack2.pop();
+        // Assert that pointer is reset (pop should throw)
+        Assertions.assertThrows(IllegalStateException.class, () -> {
+            stack2.pop();
+        }, "Should throw on underflow because pointer was reset");
     }
 }

@@ -8,6 +8,6 @@ public class BERTest {
     @Test
     public void testLoggerInitialization() {
         Assertions.assertNotNull(BER.getLogger());
-        Assertions.assertEquals(BER.MOD_ID, BER.getLogger().getName());
+        Assertions.assertEquals("BER-Logger", BER.getLogger().getName());
     }
 }

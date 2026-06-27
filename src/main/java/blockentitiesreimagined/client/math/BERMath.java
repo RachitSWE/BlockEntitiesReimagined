@@ -147,6 +147,8 @@ public final class BERMath {
     private static final ThreadLocal<MatrixStack> LOCAL_STACK = ThreadLocal.withInitial(MatrixStack::new);
 
     public static MatrixStack getStack() {
-        return LOCAL_STACK.get();
+        MatrixStack stack = LOCAL_STACK.get();
+        stack.clear();
+        return stack;
     }
 }

@@ -11,7 +11,7 @@ public class BER implements ClientModInitializer {
     public static final String MOD_ID = "blockentitiesreimagined";
 
     private static class GlobalScope {
-        private static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+        private static final Logger LOGGER = LoggerFactory.getLogger("BER-Logger");
     }
 
     public static Logger getLogger() {
