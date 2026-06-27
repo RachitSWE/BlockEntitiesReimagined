@@ -19,14 +19,14 @@ public class BERMathTest {
         
         Assertions.assertNotSame(v1, v2, "Pool should provide different instances for consecutive calls");
         
-        // After pooling a certain amount (256), it should wrap around and reuse the first instance.
-        // Let's exhaust the pool up to size 256.
-        for (int i = 0; i < 254; i++) {
+        // After pooling a certain amount (2048), it should wrap around and reuse the first instance.
+        // Let's exhaust the pool up to size 2048.
+        for (int i = 0; i < 2046; i++) {
             BERMath.getVec3();
         }
         
-        Vector3f v257 = BERMath.getVec3();
-        Assertions.assertSame(v1, v257, "Pool should wrap around and reuse instances");
+        Vector3f v2049 = BERMath.getVec3();
+        Assertions.assertSame(v1, v2049, "Pool should wrap around and reuse instances");
     }
 
     @Test
@@ -96,19 +96,19 @@ public class BERMathTest {
     @Test
     public void testGetStackClearsState() {
         BERMath.MatrixStack stack1 = BERMath.getStack();
-        
         stack1.peek().translate(5.0f, 5.0f, 5.0f);
         stack1.push();
         
+        // When we get the stack again, it MUST be completely wiped clean
         BERMath.MatrixStack stack2 = BERMath.getStack();
         Assertions.assertSame(stack1, stack2, "getStack() should return the same instance for the same thread");
         
-        // Assert that the state was cleared
-        Assertions.assertEquals(0.0f, stack2.peek().m30(), 1e-6, "Translation X should be cleared");
+        // Assert that the state was wiped (m30 should be 0.0f, not 5.0f)
+        Assertions.assertEquals(0.0f, stack2.peek().m30(), 1e-6, "Matrix state MUST be cleared upon retrieval to prevent cross-chunk contamination");
         
-        // Assert that pointer is reset (pop should throw)
+        // Assert that pointer is reset (pop SHOULD throw an underflow exception since it's empty again)
         Assertions.assertThrows(IllegalStateException.class, () -> {
             stack2.pop();
-        }, "Should throw on underflow because pointer was reset");
+        }, "Should throw on underflow because pointer was reset to 0 by clear()");
     }
 }

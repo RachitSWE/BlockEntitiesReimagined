@@ -29,7 +29,7 @@ public class BERBufferPoolTest {
     public void testCapacity() {
         ByteBuffer b1 = BERBufferPool.acquire();
         try {
-            Assertions.assertEquals(262144, b1.capacity(), "Buffer capacity should be 256KB");
+            Assertions.assertEquals(1048576, b1.capacity(), "Buffer capacity should be 1MB");
         } finally {
             BERBufferPool.release(b1);
         }

@@ -14,7 +14,7 @@ import org.joml.Quaternionf;
  * sent to another thread (e.g., in a concurrent queue), it must be copied into a standard, non-pooled instance.
  */
 public final class BERMath {
-    private static final int POOL_SIZE = 256;
+    private static final int POOL_SIZE = 2048;
 
     private static final ThreadLocal<VectorPool3f> POOL_VEC3 = ThreadLocal.withInitial(VectorPool3f::new);
     private static final ThreadLocal<VectorPool4f> POOL_VEC4 = ThreadLocal.withInitial(VectorPool4f::new);
@@ -57,7 +57,7 @@ public final class BERMath {
 
         Vector3f next() {
             Vector3f v = pool[index];
-            index = (index + 1) % POOL_SIZE;
+            index = (index + 1) & (POOL_SIZE - 1);
             return v;
         }
     }
@@ -72,7 +72,7 @@ public final class BERMath {
 
         Vector4f next() {
             Vector4f v = pool[index];
-            index = (index + 1) % POOL_SIZE;
+            index = (index + 1) & (POOL_SIZE - 1);
             return v;
         }
     }
@@ -87,7 +87,7 @@ public final class BERMath {
 
         Matrix4f next() {
             Matrix4f m = pool[index];
-            index = (index + 1) % POOL_SIZE;
+            index = (index + 1) & (POOL_SIZE - 1);
             return m;
         }
     }
@@ -102,7 +102,7 @@ public final class BERMath {
 
         Quaternionf next() {
             Quaternionf q = pool[index];
-            index = (index + 1) % POOL_SIZE;
+            index = (index + 1) & (POOL_SIZE - 1);
             return q;
         }
     }

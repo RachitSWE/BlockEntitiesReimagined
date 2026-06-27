@@ -23,12 +23,14 @@ public final class InstancedBlockEntityManager {
             new MapMaker().weakKeys().concurrencyLevel(4).makeMap();
 
     private volatile Phase phase = Phase.IDLE;
-    private volatile boolean animating;
-    private volatile boolean pendingRebuild;
+    private boolean animating;
+    private boolean pendingRebuild;
 
     private InstancedBlockEntityManager() {}
 
     public static InstancedBlockEntityManager getOrCreate(@NotNull BlockEntity entity) {
+        InstancedBlockEntityManager existing = MANAGERS.get(entity);
+        if (existing != null) return existing;
         return MANAGERS.computeIfAbsent(entity, e -> new InstancedBlockEntityManager());
     }
 

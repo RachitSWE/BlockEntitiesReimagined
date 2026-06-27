@@ -15,11 +15,24 @@ import java.util.concurrent.CompletableFuture;
 /* local */
 import blockentitiesreimagined.client.BER;
 
+import net.fabricmc.loader.api.FabricLoader;
+
 public final class BERConfigLoader {
     private static final Gson GSON = new GsonBuilder()
             .setPrettyPrinting()
             .create();
-    private static final File FILE = new File("config/blockentitiesreimagined.json");
+    private static final File FILE = getConfigFile();
+
+    private static File getConfigFile() {
+        try {
+            if (FabricLoader.getInstance() != null) {
+                return FabricLoader.getInstance().getConfigDir().resolve("blockentitiesreimagined.json").toFile();
+            }
+        } catch (Throwable t) {
+            // Ignore in test environments
+        }
+        return new File("config/blockentitiesreimagined.json");
+    }
     private static volatile ConfigInstance activeConfig = new ConfigInstance();
 
     private BERConfigLoader() {}
