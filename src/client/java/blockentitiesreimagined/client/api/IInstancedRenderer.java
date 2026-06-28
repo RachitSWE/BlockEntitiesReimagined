@@ -4,8 +4,6 @@ package blockentitiesreimagined.client.api;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import com.mojang.blaze3d.vertex.PoseStack;
-
-/* jetbrains */
 import org.jetbrains.annotations.NotNull;
 
 public interface IInstancedRenderer<T extends BlockEntity> {

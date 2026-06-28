@@ -9,10 +9,11 @@ public class SearchTest {
     public void dumpMappings() {
         System.out.println("--- CHECKING CLASSES ---");
         String[] possibleNames = {
-            "net.minecraft.world.level.block.entity.CopperGolemStatueBlockEntity",
-            "net.minecraft.world.level.block.entity.CopperGolemBlockEntity",
-            "net.minecraft.world.level.block.entity.StatueBlockEntity",
-            "net.minecraft.world.level.block.entity.GolemStatueBlockEntity"
+            "net.minecraft.world.level.block.entity.ChiseledBookShelfBlockEntity",
+            "net.minecraft.world.level.block.entity.UnchiseledBookShelfBlockEntity",
+            "net.minecraft.world.level.block.entity.ShelfBlockEntity",
+            "net.minecraft.world.level.block.entity.BookShelfBlockEntity",
+            "net.minecraft.world.level.block.entity.CampfireBlockEntity"
         };
         for (String name : possibleNames) {
             try {
