@@ -1,8 +1,8 @@
 # Block Entities Reimagined (BER) 🚀
 
 ![Fabric](https://img.shields.io/badge/Modloader-Fabric-orange?style=for-the-badge&logo=fabric)
-![Minecraft](https://img.shields.io/badge/Minecraft-1.20+-green?style=for-the-badge&logo=minecraft)
-![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
+![Minecraft](https://img.shields.io/badge/Minecraft-26.2-green?style=for-the-badge&logo=minecraft)
+![License](https://img.shields.io/badge/License-ARR-red?style=for-the-badge)
 
 Welcome to **Block Entities Reimagined**, a from-scratch, clean-room Fabric mod designed to fundamentally overhaul the rendering pipeline for Minecraft's most demanding blocks. 
 
@@ -62,7 +62,7 @@ We currently optimize the rendering of the following entities:
 Block Entities Reimagined is built with a defensive architecture designed to integrate flawlessly alongside standard performance mods.
 
 - **Sodium Compatibility:** BER interacts safely with the Sodium render graph. If Sodium's API changes or fails to load, BER gracefully falls back to optimized vanilla rendering rather than crashing your game.
-- **Clean-Room Implementation:** This mod is 100% original code. It shares absolutely no source code with other block entity optimization mods, avoiding any GPL/LGPL viral licensing constraints.
+- **Clean-Room Implementation:** This mod is 100% original code. It shares absolutely no source code with other block entity optimization mods.
 - **Performance Telemetry:** (Optional) Use JVM flag `-Dber.debug=true` to enable an F3 overlay that tracks batched draw calls, culled entities, and task queue depth.
 
 ---
@@ -89,7 +89,7 @@ We highly recommend leaving these at their defaults unless you are experiencing 
 
 ---
 
-## 🤝 Contributing
+## 🤝 [Contributing](CONTRIBUTING.md)
 
 We welcome contributions! Whether it's adding support for a new modded block entity or tweaking the culling algorithms, feel free to open a Pull Request.
 
@@ -97,6 +97,6 @@ Please ensure that any submitted code adheres to our strict thread-safety and ze
 
 ---
 
-## 📝 License
+## 📝 [License](LICENSE.md)
 
-This project is licensed under the **ARR LICENSE**. 
+This project is licensed under the **ARR LICENSE**.

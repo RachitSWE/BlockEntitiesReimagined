@@ -13,17 +13,6 @@ Before you write any code, please understand the core tenets of BER:
 2. **Thread Safety:** Assume everything runs on a worker thread. Vanilla collections (`ArrayList`, `HashMap`) are strictly forbidden across thread boundaries. Use `ConcurrentHashMap` or lock-free queues.
 3. **No Unbounded Tasks:** Task schedulers must use bounded queues (e.g., `DiscardOldestPolicy`) to prevent OutOfMemory crashes when the player flies through dense chunks.
 
-### 1.1 AI Agent Concurrency & Clean-Room Compliance (Chinese Wall Protocol)
-
-Because this mod is a clean-room implementation designed to avoid LGPLv3 viral licensing constraints of the inspiration codebase, we enforce a strict **Chinese Wall Protocol** for all human contributors and **autonomous AI coding agents** executing tasks in this repository:
-
-1. **Reference-Only Access:** Autonomous AI coding agents are permitted to read [.gemini/all_code.txt](file:///A:/Files/Projects/Files/CubicProjects/blockentitiesreimagined/.gemini/all_code.txt) as a reference to study the underlying rendering algorithms, mixin targets, and architectural flow. However, agents are strictly forbidden from copying, translating, or reusing BBE's actual code line-by-line.
-2. **Clean-Room Implementation:** AI agents must re-implement all logical paths from scratch. Code structure, variable naming, and class distributions should diverge from the original codebase to guarantee legal compliance with the All Rights Reserved license and avoid LGPLv3 viral contamination.
-3. **Original Mixin Design:** While BBE's mixin strategies in `all_code.txt` can serve as references for hook locations, agents must formulate their own @Mixin implementations. Do not duplicate target descriptors, local variable captures, or fragile inject points. Re-evaluate target class bytecode for Minecraft 26.2 and Sodium 0.9.x to write robust, conflict-free injection code.
-4. **Architectural Refinement:** Leverage BBE's logic for reference, but prioritize cleaner, decoupled code structures. Do not replicate anti-patterns, tight class coupling, or generic duplicates identified in [.gemini/spec.md](file:///A:/Files/Projects/Files/CubicProjects/blockentitiesreimagined/.gemini/spec.md).
-
----
-
 ## 2. Code Style and Conventions
 
 We maintain a highly specific Java code style, inspired by the cleanest aspects of ecosystem standards. Your pull request will be rejected if the CI formatting checks fail.
@@ -52,7 +41,7 @@ When using builder patterns (especially for configs or rendering pipelines), eac
 
 **Example of correct builder chaining:**
 ```java
-BBERenderPage.addOptionGroup(builder.createOptionGroup()
+BERRenderPage.addOptionGroup(builder.createOptionGroup()
         .addOption(
                 builder.createBooleanOption(ResourceLocation.parse("ber:optimize.chest"))
                         .setName(Component.translatable("ber.config.storage.main.optimize.chest"))
