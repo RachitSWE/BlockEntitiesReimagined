@@ -44,4 +44,12 @@ public final class BERBufferPool {
             MemoryUtil.memFree(buffer);
         }
     }
+
+    public static void destroy() {
+        ByteBuffer buffer;
+        while ((buffer = POOL.poll()) != null) {
+            MemoryUtil.memFree(buffer);
+        }
+        POOL_SIZE.set(0);
+    }
 }

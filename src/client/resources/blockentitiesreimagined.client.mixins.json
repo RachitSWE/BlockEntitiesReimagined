@@ -3,7 +3,10 @@
 	"package": "blockentitiesreimagined.client.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"client": [
-		"BERClientMixin"
+		"BERClientMixin",
+		"BlockEntityRenderDispatcherMixin",
+		"LevelRendererMixin",
+		"SodiumWorldRendererMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

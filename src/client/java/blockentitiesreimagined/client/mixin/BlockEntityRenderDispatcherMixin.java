@@ -19,6 +19,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(value = BlockEntityRenderDispatcher.class, priority = 1500)
 public class BlockEntityRenderDispatcherMixin {
 
+    private static final ThreadLocal<Boolean> BYPASS = ThreadLocal.withInitial(() -> false);
+
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
     private <E extends BlockEntity> void ber_interceptRender(
             E blockEntity,
@@ -27,12 +29,21 @@ public class BlockEntityRenderDispatcherMixin {
             SubmitNodeCollector submitNodeCollector,
             CallbackInfo ci) {
             
+        if (BYPASS.get()) {
+            return;
+        }
+            
         IInstancedRenderer<BlockEntity> renderer = BERRendererRegistry.get(blockEntity);
         if (renderer == null) {
             return; 
         }
 
-        renderer.render(blockEntity, tickDelta, poseStack, submitNodeCollector);
+        try {
+            BYPASS.set(true);
+            renderer.render(blockEntity, tickDelta, poseStack, submitNodeCollector);
+        } finally {
+            BYPASS.set(false);
+        }
         
         ci.cancel();
     }

@@ -23,16 +23,13 @@ public class BERShelfRenderer implements IInstancedRenderer<ShelfBlockEntity> {
         int seed = (int) entity.getBlockPos().asLong();
         int i = 0;
         
-        BERMath.MatrixStack localStack = BERMath.getStack();
-        localStack.peek().set(matrices.last().pose());
-        
         for (ItemStack stack : entity.getItems()) {
             if (stack != null && !stack.isEmpty()) {
-                localStack.push();
-                localStack.peek().translate(0.5F, 0.5F, 0.5F);
-                localStack.peek().translate((i % 2) * 0.25F - 0.125F, (i / 2) * 0.25F, 0.0F);
+                matrices.pushPose();
+                matrices.translate(0.5F, 0.5F, 0.5F);
+                matrices.translate((i % 2) * 0.25F - 0.125F, (i / 2) * 0.25F, 0.0F);
                 
-                // Minecraft.getInstance().getItemRenderer().renderStatic(
+                // Minecraft.getInstance().itemRenderer.renderStatic(
                 //    stack, 
                 //    ItemDisplayContext.FIXED, 
                 //    15728880, 
@@ -43,7 +40,7 @@ public class BERShelfRenderer implements IInstancedRenderer<ShelfBlockEntity> {
                 //    seed + i
                 // );
                 
-                localStack.pop();
+                matrices.popPose();
             }
             i++;
         }

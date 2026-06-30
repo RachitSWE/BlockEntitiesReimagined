@@ -10,11 +10,11 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.client.renderer.culling.Frustum;
 
 /* java */
-import java.util.Collections;
 import java.util.Map;
-import java.util.WeakHashMap;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.concurrent.ConcurrentMap;
+import com.google.common.collect.MapMaker;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -24,7 +24,10 @@ import org.jetbrains.annotations.NotNull;
  */
 public class BERStaticEntityInstancer {
     
-    private final Map<LevelChunk, ChunkEntityData> chunkMap = Collections.synchronizedMap(new WeakHashMap<>());
+    private final ConcurrentMap<LevelChunk, ChunkEntityData> chunkMap = new MapMaker()
+            .weakKeys()
+            .concurrencyLevel(4)
+            .makeMap();
     
     private final BERInstancedBuffer instancedBuffer;
     private final IRenderBackend backend;
@@ -55,29 +58,37 @@ public class BERStaticEntityInstancer {
     public void processAndUpload(@NotNull Frustum frustum) {
         instancedBuffer.reset();
         
-        synchronized (chunkMap) {
-            for (Map.Entry<LevelChunk, ChunkEntityData> entry : chunkMap.entrySet()) {
-                LevelChunk chunk = entry.getKey();
-                ChunkEntityData data = entry.getValue();
-                
-                if (data == null || chunk == null) continue;
-                
-                // Fast chunk culling logic can be applied here
-                // e.g. if (!frustum.isVisible(chunk.getBoundingBox())) continue;
-                
-                if (data.dirty) {
-                    synchronized (data) {
-                        data.fastArray = data.entities.toArray(new BlockEntity[0]);
-                        data.dirty = false;
-                    }
+        for (Map.Entry<LevelChunk, ChunkEntityData> entry : chunkMap.entrySet()) {
+            LevelChunk chunk = entry.getKey();
+            ChunkEntityData data = entry.getValue();
+            
+            if (data == null || chunk == null) continue;
+            
+            if (data.dirty) {
+                synchronized (data) {
+                    data.fastArray = data.entities.toArray(new BlockEntity[0]);
+                    data.dirty = false;
                 }
-                
-                BlockEntity[] array = data.fastArray;
-                for (int i = 0; i < array.length; i++) {
-                    BlockEntity entity = array[i];
-                    if (entity != null) {
-                        // Perform fast frustum culling using frustum for specific entity
-                        // If visible, compute matrix and push to buffer
+            }
+            
+            BlockEntity[] array = data.fastArray;
+            for (int i = 0; i < array.length; i++) {
+                BlockEntity entity = array[i];
+                if (entity != null) {
+                    blockentitiesreimagined.client.api.IInstancedRenderer<BlockEntity> renderer = 
+                            blockentitiesreimagined.client.render.immediate.BERRendererRegistry.get(entity);
+                    
+                    if (renderer != null && renderer.isStatic()) {
+                        net.minecraft.core.BlockPos pos = entity.getBlockPos();
+                        net.minecraft.world.phys.AABB aabb = new net.minecraft.world.phys.AABB(
+                                pos.getX(), pos.getY(), pos.getZ(),
+                                pos.getX() + 1.0, pos.getY() + 1.0, pos.getZ() + 1.0
+                        );
+                        
+                        if (frustum.isVisible(aabb)) {
+                            org.joml.Matrix4f matrix = BERMath.getMat4().translation(pos.getX(), pos.getY(), pos.getZ());
+                            instancedBuffer.addInstance(matrix);
+                        }
                     }
                 }
             }
