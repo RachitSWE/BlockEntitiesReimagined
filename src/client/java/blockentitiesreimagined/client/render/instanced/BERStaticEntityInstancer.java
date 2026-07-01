@@ -75,8 +75,8 @@ public class BERStaticEntityInstancer {
             for (int i = 0; i < array.length; i++) {
                 BlockEntity entity = array[i];
                 if (entity != null) {
-                    blockentitiesreimagined.client.api.IInstancedRenderer<BlockEntity> renderer = 
-                            blockentitiesreimagined.client.render.immediate.BERRendererRegistry.get(entity);
+                    blockentitiesreimagined.client.api.IInstancedRenderer<?> renderer =
+                            blockentitiesreimagined.client.render.immediate.BERRendererRegistry.getByType(entity.getType());
                     
                     if (renderer != null && renderer.isStatic()) {
                         net.minecraft.core.BlockPos pos = entity.getBlockPos();

@@ -51,12 +51,11 @@ We currently optimize the rendering of the following entities:
 4. **🏳️ Banners**
    - Safely capped NBT pattern iterations to prevent malicious server freezing
 5. **🏺 Decorated Pots**
-6. **🛏️ Beds**
-7. **🔔 Bells**
-8. **🤖 Copper Golem Statues**
-9. **🔥 Campfires**
-10. **📚 Shelves**
-11. **📖 Lecterns**
+6. **🔔 Bells**
+7. **🤖 Copper Golem Statues**
+8. **🔥 Campfires**
+9. **📚 Shelves**
+10. **📖 Lecterns**
 
 ---
 

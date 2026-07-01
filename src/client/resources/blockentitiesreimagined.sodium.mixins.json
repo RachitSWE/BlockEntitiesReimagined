@@ -1,0 +1,11 @@
+{
+	"required": false,
+	"package": "blockentitiesreimagined.client.mixin",
+	"compatibilityLevel": "JAVA_25",
+	"client": [
+		"SodiumWorldRendererMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

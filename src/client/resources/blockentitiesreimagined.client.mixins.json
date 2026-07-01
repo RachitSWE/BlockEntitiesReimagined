@@ -5,8 +5,7 @@
 	"client": [
 		"BERClientMixin",
 		"BlockEntityRenderDispatcherMixin",
-		"LevelRendererMixin",
-		"SodiumWorldRendererMixin"
+		"LevelRendererMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

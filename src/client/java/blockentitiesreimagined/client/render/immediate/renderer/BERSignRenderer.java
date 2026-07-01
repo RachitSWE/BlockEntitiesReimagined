@@ -5,38 +5,32 @@ import blockentitiesreimagined.client.api.IInstancedRenderer;
 import blockentitiesreimagined.client.math.BERMath;
 
 /* minecraft */
-import net.minecraft.world.level.block.entity.SignBlockEntity;
-import net.minecraft.world.level.block.entity.SignText;
+import net.minecraft.client.renderer.blockentity.state.SignRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.NotNull;
 
-/* joml */
-import org.joml.Math;
-
-public class BERSignRenderer implements IInstancedRenderer<SignBlockEntity> {
-    private static final float ROT_180 = Math.toRadians(180f);
+public class BERSignRenderer implements IInstancedRenderer<SignRenderState> {
+    private static final float ROT_180 = org.joml.Math.toRadians(180f);
 
     @Override
-    public void render(@NotNull SignBlockEntity sign, float tickDelta, @NotNull PoseStack matrices, @NotNull SubmitNodeCollector vertexConsumers) {
-        SignText frontText = sign.getFrontText();
-        SignText backText = sign.getBackText();
-
+    public void renderState(@NotNull SignRenderState state, @NotNull PoseStack matrices,
+                            @NotNull SubmitNodeCollector collector, @NotNull CameraRenderState cameraRenderState) {
         matrices.pushPose();
-        renderText(frontText, matrices, vertexConsumers);
-        
+        renderTextSide(state, matrices, collector, false);
+
         matrices.translate(0.5f, 0.5f, 0.5f);
         matrices.mulPose(BERMath.getQuat().rotationY(ROT_180));
         matrices.translate(-0.5f, -0.5f, -0.5f);
-        
-        renderText(backText, matrices, vertexConsumers);
+
+        renderTextSide(state, matrices, collector, true);
         matrices.popPose();
     }
 
     @Override
-    public boolean isStatic() {
-        return true; 
-    }
+    public boolean isStatic() { return true; }
 
-    private void renderText(@NotNull SignText text, @NotNull PoseStack matrices, @NotNull SubmitNodeCollector consumers) {}
+    private void renderTextSide(@NotNull SignRenderState state, @NotNull PoseStack matrices,
+                                @NotNull SubmitNodeCollector consumers, boolean back) {}
 }

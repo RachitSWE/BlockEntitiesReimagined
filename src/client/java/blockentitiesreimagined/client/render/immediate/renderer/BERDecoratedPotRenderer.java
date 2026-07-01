@@ -4,21 +4,20 @@ package blockentitiesreimagined.client.render.immediate.renderer;
 import blockentitiesreimagined.client.api.IInstancedRenderer;
 
 /* minecraft */
-import net.minecraft.world.level.block.entity.DecoratedPotBlockEntity;
+import net.minecraft.client.renderer.blockentity.state.DecoratedPotRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import com.mojang.blaze3d.vertex.PoseStack;
-
-/* jetbrains */
 import org.jetbrains.annotations.NotNull;
 
-public class BERDecoratedPotRenderer implements IInstancedRenderer<DecoratedPotBlockEntity> {
+public class BERDecoratedPotRenderer implements IInstancedRenderer<DecoratedPotRenderState> {
+
     @Override
-    public void render(@NotNull DecoratedPotBlockEntity pot, float tickDelta, @NotNull PoseStack matrices, @NotNull SubmitNodeCollector vertexConsumers) {
+    public void renderState(@NotNull DecoratedPotRenderState state, @NotNull PoseStack matrices,
+                            @NotNull SubmitNodeCollector collector, @NotNull CameraRenderState cameraRenderState) {
         // Fully static entity
     }
 
     @Override
-    public boolean isStatic() {
-        return true;
-    }
+    public boolean isStatic() { return true; }
 }

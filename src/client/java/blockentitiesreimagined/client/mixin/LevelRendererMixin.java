@@ -54,7 +54,7 @@ public class LevelRendererMixin {
     private void ber_beforeSubmitBlockEntities(
             com.mojang.blaze3d.vertex.PoseStack poseStack, 
             net.minecraft.client.renderer.state.level.LevelRenderState levelRenderState, 
-            net.minecraft.client.renderer.SubmitNodeCollector submitNodeCollector, 
+            net.minecraft.client.renderer.SubmitNodeCollector SubmitNodeCollector, 
             CallbackInfo ci) {
         
         // Filter out block entities that are already handled by our instanced renderer

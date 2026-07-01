@@ -2,29 +2,13 @@ package blockentitiesreimagined.client.render.immediate;
 
 /* local */
 import blockentitiesreimagined.client.api.IInstancedRenderer;
-import blockentitiesreimagined.client.render.immediate.renderer.BERBannerRenderer;
-import blockentitiesreimagined.client.render.immediate.renderer.BERBellRenderer;
-import blockentitiesreimagined.client.render.immediate.renderer.BERCampfireRenderer;
-import blockentitiesreimagined.client.render.immediate.renderer.BERChestRenderer;
-import blockentitiesreimagined.client.render.immediate.renderer.BERCopperGolemStatueRenderer;
-import blockentitiesreimagined.client.render.immediate.renderer.BERDecoratedPotRenderer;
-import blockentitiesreimagined.client.render.immediate.renderer.BERLecternRenderer;
-import blockentitiesreimagined.client.render.immediate.renderer.BERShelfRenderer;
-import blockentitiesreimagined.client.render.immediate.renderer.BERShulkerRenderer;
-import blockentitiesreimagined.client.render.immediate.renderer.BERSignRenderer;
+import blockentitiesreimagined.client.render.immediate.renderer.*;
 
 /* minecraft */
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.ChestBlockEntity;
-import net.minecraft.world.level.block.entity.EnderChestBlockEntity;
-import net.minecraft.world.level.block.entity.ShulkerBoxBlockEntity;
-import net.minecraft.world.level.block.entity.SignBlockEntity;
-import net.minecraft.world.level.block.entity.HangingSignBlockEntity;
-import net.minecraft.world.level.block.entity.BannerBlockEntity;
-import net.minecraft.world.level.block.entity.BellBlockEntity;
-import net.minecraft.world.level.block.entity.DecoratedPotBlockEntity;
-import net.minecraft.world.level.block.entity.CampfireBlockEntity;
-import net.minecraft.world.level.block.entity.LecternBlockEntity;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 
 /* java */
 import java.util.Map;
@@ -32,53 +16,41 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @SuppressWarnings("unchecked")
 public final class BERRendererRegistry {
-    private static final Map<Class<? extends BlockEntity>, IInstancedRenderer<?>> REGISTRY = new ConcurrentHashMap<>();
+    private static final Map<BlockEntityType<?>, IInstancedRenderer<?>> REGISTRY = new ConcurrentHashMap<>();
 
     static {
         BERChestRenderer chestRenderer = new BERChestRenderer();
-        register(ChestBlockEntity.class, chestRenderer);
-        register(EnderChestBlockEntity.class, chestRenderer);
-        register(net.minecraft.world.level.block.entity.TrappedChestBlockEntity.class, chestRenderer);
-        
-        register(ShulkerBoxBlockEntity.class, new BERShulkerRenderer());
-        register(SignBlockEntity.class, new BERSignRenderer());
-        register(HangingSignBlockEntity.class, new BERSignRenderer());
-        register(BannerBlockEntity.class, new BERBannerRenderer());
-        register(BellBlockEntity.class, new BERBellRenderer());
-        register(DecoratedPotBlockEntity.class, new BERDecoratedPotRenderer());
-        register(CampfireBlockEntity.class, new BERCampfireRenderer());
-        register(LecternBlockEntity.class, new BERLecternRenderer());
-        
-        try {
-            Class<?> copperChest = Class.forName("net.minecraft.world.level.block.entity.CopperChestBlockEntity");
-            if (BlockEntity.class.isAssignableFrom(copperChest)) {
-                REGISTRY.put((Class<? extends BlockEntity>) copperChest, chestRenderer);
-            }
-        } catch (ClassNotFoundException ignored) {}
+        registerByKey("chest", chestRenderer);
+        registerByKey("ender_chest", chestRenderer);
+        registerByKey("trapped_chest", chestRenderer);
 
-        try {
-            Class<?> copperGolem = Class.forName("net.minecraft.world.level.block.entity.CopperGolemStatueBlockEntity");
-            if (BlockEntity.class.isAssignableFrom(copperGolem)) {
-                REGISTRY.put((Class<? extends BlockEntity>) copperGolem, new BERCopperGolemStatueRenderer());
-            }
-        } catch (ClassNotFoundException ignored) {}
-        
-        try {
-            Class<?> shelfClass = Class.forName("net.minecraft.world.level.block.entity.ShelfBlockEntity");
-            if (BlockEntity.class.isAssignableFrom(shelfClass)) {
-                REGISTRY.put((Class<? extends BlockEntity>) shelfClass, new BERShelfRenderer());
-            }
-        } catch (ClassNotFoundException ignored) {}
+        registerByKey("shulker_box", new BERShulkerRenderer());
+        registerByKey("sign", new BERSignRenderer());
+        registerByKey("hanging_sign", new BERSignRenderer());
+        registerByKey("banner", new BERBannerRenderer());
+        registerByKey("bell", new BERBellRenderer());
+        registerByKey("decorated_pot", new BERDecoratedPotRenderer());
+        registerByKey("campfire", new BERCampfireRenderer());
+        registerByKey("soul_campfire", new BERCampfireRenderer());
+        registerByKey("lectern", new BERLecternRenderer());
+        registerByKey("shelf", new BERShelfRenderer());
+        registerByKey("copper_golem_statue", new BERCopperGolemStatueRenderer());
+    }
+
+    private static void registerByKey(String key, IInstancedRenderer<?> renderer) {
+        Identifier id = Identifier.withDefaultNamespace(key);
+        BuiltInRegistries.BLOCK_ENTITY_TYPE.getOptional(id).ifPresent(type -> REGISTRY.put(type, renderer));
     }
 
     private BERRendererRegistry() {}
 
-    public static <T extends BlockEntity> void register(Class<T> type, IInstancedRenderer<? super T> renderer) {
+    public static <S extends BlockEntityRenderState> void register(
+            BlockEntityType<?> type, IInstancedRenderer<S> renderer) {
         REGISTRY.put(type, renderer);
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends BlockEntity> IInstancedRenderer<T> get(T entity) {
-        return (IInstancedRenderer<T>) REGISTRY.get(entity.getClass());
+    public static <S extends BlockEntityRenderState> IInstancedRenderer<S> getByType(BlockEntityType<?> type) {
+        return (IInstancedRenderer<S>) REGISTRY.get(type);
     }
 }

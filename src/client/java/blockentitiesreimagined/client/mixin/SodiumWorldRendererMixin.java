@@ -47,7 +47,7 @@ public class SodiumWorldRendererMixin {
             boolean globalBlockEntity, 
             CallbackInfo ci) {
         
-        IInstancedRenderer<BlockEntity> renderer = BERRendererRegistry.get(blockEntity);
+        IInstancedRenderer<?> renderer = BERRendererRegistry.getByType(blockEntity.getType());
         if (renderer != null && renderer.isStatic()) {
             if (blockEntity.getLevel() != null) {
                 LevelChunk chunk = blockEntity.getLevel().getChunkAt(blockEntity.getBlockPos());
