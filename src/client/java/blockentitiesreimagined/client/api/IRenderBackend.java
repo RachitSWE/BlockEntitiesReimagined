@@ -19,10 +19,10 @@ public interface IRenderBackend {
 
     /**
      * Dispatch the instanced draw calls for static entities for a specific chunk or globally.
-     * @param camera    The current camera.
+     * @param mvp       The combined ModelView-Projection matrix.
      * @param tickDelta The current tick delta.
      */
-    void dispatchInstancedDraws(@NotNull Camera camera, float tickDelta);
+    void dispatchInstancedDraws(@NotNull org.joml.Matrix4fc mvp, float tickDelta);
 
     /**
      * Submit dynamic block entities that cannot be instanced natively.

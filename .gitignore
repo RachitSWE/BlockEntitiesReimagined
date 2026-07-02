@@ -41,5 +41,6 @@ replay_*.log
 *.jfr
 
 # misc
-GEMINI.md 
+GEMINI.md
 .gemini/
+CLAUDE.md

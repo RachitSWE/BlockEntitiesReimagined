@@ -13,9 +13,9 @@ import org.jetbrains.annotations.NotNull;
 public class BERCopperGolemStatueRenderer implements IInstancedRenderer<CopperGolemStatueRenderState> {
 
     @Override
-    public void renderState(@NotNull CopperGolemStatueRenderState state, @NotNull PoseStack matrices,
+    public boolean renderState(@NotNull CopperGolemStatueRenderState state, @NotNull PoseStack matrices,
                             @NotNull SubmitNodeCollector collector, @NotNull CameraRenderState cameraRenderState) {
-        // Fully static entity - meshes baked directly into chunk geometry
+        return renderStateGeneric(state, matrices, collector, cameraRenderState);
     }
 
     @Override

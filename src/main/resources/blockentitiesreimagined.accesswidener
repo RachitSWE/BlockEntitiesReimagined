@@ -1,0 +1,5 @@
+accessWidener v2 official
+# Expose Frustum.intersection so BERFrustumCuller can call
+# FrustumIntersection.testAab(minX,minY,minZ,maxX,maxY,maxZ) with
+# zero heap allocation — no new AABB() in the hot render loop.
+accessible field net/minecraft/client/renderer/culling/Frustum intersection Lorg/joml/FrustumIntersection;

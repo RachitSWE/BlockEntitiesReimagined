@@ -44,6 +44,16 @@ public final class BERRendererRegistry {
 
     private BERRendererRegistry() {}
 
+    private static java.util.Map<BlockEntityType<?>, net.minecraft.client.renderer.blockentity.BlockEntityRenderer<?, ?>> vanillaRenderers;
+
+    public static void setVanillaRenderers(java.util.Map<BlockEntityType<?>, net.minecraft.client.renderer.blockentity.BlockEntityRenderer<?, ?>> map) {
+        vanillaRenderers = map;
+    }
+
+    public static net.minecraft.client.renderer.blockentity.BlockEntityRenderer<?, ?> getVanillaRenderer(BlockEntityType<?> type) {
+        return vanillaRenderers != null ? vanillaRenderers.get(type) : null;
+    }
+
     public static <S extends BlockEntityRenderState> void register(
             BlockEntityType<?> type, IInstancedRenderer<S> renderer) {
         REGISTRY.put(type, renderer);

@@ -12,25 +12,22 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.NotNull;
 
 public class BERSignRenderer implements IInstancedRenderer<SignRenderState> {
-    private static final float ROT_180 = org.joml.Math.toRadians(180f);
 
     @Override
-    public void renderState(@NotNull SignRenderState state, @NotNull PoseStack matrices,
+    public boolean renderState(@NotNull SignRenderState state, @NotNull PoseStack matrices,
                             @NotNull SubmitNodeCollector collector, @NotNull CameraRenderState cameraRenderState) {
-        matrices.pushPose();
-        renderTextSide(state, matrices, collector, false);
-
-        matrices.translate(0.5f, 0.5f, 0.5f);
-        matrices.mulPose(BERMath.getQuat().rotationY(ROT_180));
-        matrices.translate(-0.5f, -0.5f, -0.5f);
-
-        renderTextSide(state, matrices, collector, true);
-        matrices.popPose();
+        if (state.blockPos != null && cameraRenderState.pos != null) {
+            double dx = state.blockPos.getX() + 0.5 - cameraRenderState.pos.x;
+            double dy = state.blockPos.getY() + 0.5 - cameraRenderState.pos.y;
+            double dz = state.blockPos.getZ() + 0.5 - cameraRenderState.pos.z;
+            double distSq = dx * dx + dy * dy + dz * dz;
+            if (distSq <= 64.0 * 64.0) {
+                return false; // Render via vanilla when close to draw text
+            }
+        }
+        return renderStateGeneric(state, matrices, collector, cameraRenderState);
     }
 
     @Override
     public boolean isStatic() { return true; }
-
-    private void renderTextSide(@NotNull SignRenderState state, @NotNull PoseStack matrices,
-                                @NotNull SubmitNodeCollector consumers, boolean back) {}
 }

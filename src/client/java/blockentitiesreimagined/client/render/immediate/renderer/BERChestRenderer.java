@@ -19,46 +19,12 @@ public class BERChestRenderer implements IInstancedRenderer<ChestRenderState> {
     @Override
     public boolean renderState(@NotNull ChestRenderState state, @NotNull PoseStack matrices,
                                @NotNull SubmitNodeCollector collector, @NotNull CameraRenderState cameraRenderState) {
-        // state.open is the lid openness [0..1], state.facing is the chest orientation
-        float angle = state.open * MAX_OPENING_ANGLE;
-        Direction facing = state.facing != null ? state.facing : Direction.SOUTH;
-
-        Quaternionf rotationY = BERMath.getQuat();
-        rotationY.rotationY(org.joml.Math.toRadians(-facing.toYRot()));
-
-        matrices.pushPose();
-        matrices.translate(0.5f, 0.5f, 0.5f);
-        matrices.mulPose(rotationY);
-        matrices.translate(-0.5f, -0.5f, -0.5f);
-
-        emitBasePart(matrices, collector, state);
-
-        if (angle != 0.0f) {
-            matrices.pushPose();
-            matrices.translate(0f, 0.5625f, 0.0625f);
-            Quaternionf rotationX = BERMath.getQuat().rotationX(angle);
-            matrices.mulPose(rotationX);
-            matrices.translate(0f, -0.5625f, -0.0625f);
-            emitLidPart(matrices, collector, state);
-            matrices.popPose();
-        } else {
-            emitLidPart(matrices, collector, state);
+        if (state.open > 0.0f) {
+            return false; // Fall back to vanilla rendering when chest is animating
         }
-
-        matrices.popPose();
-        return false; // stubs not yet implemented — fall through to vanilla
+        return renderStateGeneric(state, matrices, collector, cameraRenderState);
     }
 
     @Override
     public boolean isStatic() { return false; }
-
-    private void emitBasePart(@NotNull PoseStack matrices, @NotNull SubmitNodeCollector consumers,
-                              @NotNull ChestRenderState state) {
-        // Implementation retrieves cached quads and outputs them to consumer
-    }
-
-    private void emitLidPart(@NotNull PoseStack matrices, @NotNull SubmitNodeCollector consumers,
-                             @NotNull ChestRenderState state) {
-        // Implementation retrieves cached quads and outputs them to consumer
-    }
 }

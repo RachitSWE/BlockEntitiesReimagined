@@ -13,9 +13,10 @@ import org.jetbrains.annotations.NotNull;
 public class BERShelfRenderer implements IInstancedRenderer<ShelfRenderState> {
 
     @Override
-    public void renderState(@NotNull ShelfRenderState state, @NotNull PoseStack matrices,
+    public boolean renderState(@NotNull ShelfRenderState state, @NotNull PoseStack matrices,
                             @NotNull SubmitNodeCollector collector, @NotNull CameraRenderState cameraRenderState) {
         // Item rendering via instanced item pipeline
+        return false;
     }
 
     @Override

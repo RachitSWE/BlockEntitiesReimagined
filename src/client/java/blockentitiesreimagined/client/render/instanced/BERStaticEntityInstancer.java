@@ -29,12 +29,22 @@ public class BERStaticEntityInstancer {
             .concurrencyLevel(4)
             .makeMap();
     
-    private final BERInstancedBuffer instancedBuffer;
+    private final java.util.concurrent.ConcurrentHashMap<net.minecraft.world.level.block.entity.BlockEntityType<?>, BERInstancedBuffer> buffers =
+            new java.util.concurrent.ConcurrentHashMap<>();
     private final IRenderBackend backend;
+    private final int maxInstances;
 
     public BERStaticEntityInstancer(IRenderBackend backend, int maxInstances) {
         this.backend = backend;
-        this.instancedBuffer = new BERInstancedBuffer(maxInstances);
+        this.maxInstances = maxInstances;
+    }
+
+    public BERInstancedBuffer getBuffer(net.minecraft.world.level.block.entity.BlockEntityType<?> type) {
+        return buffers.computeIfAbsent(type, t -> new BERInstancedBuffer(maxInstances));
+    }
+
+    public java.util.concurrent.ConcurrentHashMap<net.minecraft.world.level.block.entity.BlockEntityType<?>, BERInstancedBuffer> getBuffers() {
+        return buffers;
     }
 
     public void addEntity(@NotNull LevelChunk chunk, @NotNull BlockEntity entity) {
@@ -56,18 +66,19 @@ public class BERStaticEntityInstancer {
     }
 
     public void processAndUpload(@NotNull Frustum frustum) {
-        instancedBuffer.reset();
+        // Reset all active buffers
+        for (BERInstancedBuffer buffer : buffers.values()) {
+            buffer.reset();
+        }
         
         for (Map.Entry<LevelChunk, ChunkEntityData> entry : chunkMap.entrySet()) {
-            LevelChunk chunk = entry.getKey();
             ChunkEntityData data = entry.getValue();
-            
-            if (data == null || chunk == null) continue;
-            
             if (data.dirty) {
                 synchronized (data) {
-                    data.fastArray = data.entities.toArray(new BlockEntity[0]);
-                    data.dirty = false;
+                    if (data.dirty) {
+                        data.fastArray = data.entities.toArray(new BlockEntity[0]);
+                        data.dirty = false;
+                    }
                 }
             }
             
@@ -80,30 +91,26 @@ public class BERStaticEntityInstancer {
                     
                     if (renderer != null && renderer.isStatic()) {
                         net.minecraft.core.BlockPos pos = entity.getBlockPos();
-                        net.minecraft.world.phys.AABB aabb = new net.minecraft.world.phys.AABB(
-                                pos.getX(), pos.getY(), pos.getZ(),
-                                pos.getX() + 1.0, pos.getY() + 1.0, pos.getZ() + 1.0
-                        );
                         
-                        if (frustum.isVisible(aabb)) {
+                        // inv: index i represents already processed entities; instancedBuffer contains matrices for visible entities in array[0..i).
+                        if (blockentitiesreimagined.client.render.BERFrustumCuller.isVisible(frustum, pos)) {
                             org.joml.Matrix4f matrix = BERMath.getMat4().translation(pos.getX(), pos.getY(), pos.getZ());
-                            instancedBuffer.addInstance(matrix);
+                            getBuffer(entity.getType()).addInstance(matrix);
                         }
                     }
                 }
             }
         }
         
-        instancedBuffer.uploadInstances();
-    }
-
-    public BERInstancedBuffer getBuffer() {
-        return instancedBuffer;
+        // Upload instances to GPU for all active buffers
+        for (BERInstancedBuffer buffer : buffers.values()) {
+            buffer.uploadInstances();
+        }
     }
     
     private static class ChunkEntityData {
         final Set<BlockEntity> entities = new HashSet<>();
-        BlockEntity[] fastArray = new BlockEntity[0];
-        boolean dirty = false;
+        volatile BlockEntity[] fastArray = new BlockEntity[0];
+        volatile boolean dirty = false;
     }
 }

@@ -31,10 +31,6 @@ import java.util.SortedSet;
 
 @Mixin(value = SodiumWorldRenderer.class, remap = false)
 public class SodiumWorldRendererMixin {
-    @Unique
-    private static final BERSodiumRenderBackend BACKEND = new BERSodiumRenderBackend();
-    @Unique
-    private static final BERStaticEntityInstancer INSTANCER = new BERStaticEntityInstancer(BACKEND, 10000);
 
     @Inject(method = "extractBlockEntity", at = @At("HEAD"), cancellable = true)
     private void ber_extractBlockEntity(
@@ -49,10 +45,10 @@ public class SodiumWorldRendererMixin {
         
         IInstancedRenderer<?> renderer = BERRendererRegistry.getByType(blockEntity.getType());
         if (renderer != null && renderer.isStatic()) {
-            if (blockEntity.getLevel() != null) {
+            if (blockEntity.getLevel() != null && blockentitiesreimagined.client.BlockEntitiesReimaginedClient.getInstancer() != null) {
                 LevelChunk chunk = blockEntity.getLevel().getChunkAt(blockEntity.getBlockPos());
                 if (chunk != null) {
-                    INSTANCER.addEntity(chunk, blockEntity);
+                    blockentitiesreimagined.client.BlockEntitiesReimaginedClient.getInstancer().addEntity(chunk, blockEntity);
                 }
             }
             ci.cancel();

@@ -13,9 +13,9 @@ import org.jetbrains.annotations.NotNull;
 public class BERDecoratedPotRenderer implements IInstancedRenderer<DecoratedPotRenderState> {
 
     @Override
-    public void renderState(@NotNull DecoratedPotRenderState state, @NotNull PoseStack matrices,
+    public boolean renderState(@NotNull DecoratedPotRenderState state, @NotNull PoseStack matrices,
                             @NotNull SubmitNodeCollector collector, @NotNull CameraRenderState cameraRenderState) {
-        // Fully static entity
+        return renderStateGeneric(state, matrices, collector, cameraRenderState);
     }
 
     @Override

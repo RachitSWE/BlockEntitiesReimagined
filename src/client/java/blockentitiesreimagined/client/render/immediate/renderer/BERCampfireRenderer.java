@@ -15,10 +15,11 @@ import org.joml.Quaternionf;
 public class BERCampfireRenderer implements IInstancedRenderer<CampfireRenderState> {
 
     @Override
-    public void renderState(@NotNull CampfireRenderState state, @NotNull PoseStack matrices,
+    public boolean renderState(@NotNull CampfireRenderState state, @NotNull PoseStack matrices,
                             @NotNull SubmitNodeCollector collector, @NotNull CameraRenderState cameraRenderState) {
         // Items on the campfire are handled via instanced item rendering
         // Static log/frame geometry is baked into the chunk mesh
+        return false;
     }
 
     @Override

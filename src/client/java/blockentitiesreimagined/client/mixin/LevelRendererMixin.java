@@ -27,10 +27,6 @@ import org.joml.Vector4f;
 
 @Mixin(LevelRenderer.class)
 public class LevelRendererMixin {
-    @Unique
-    private static final BERVanillaRenderBackend BACKEND = new BERVanillaRenderBackend();
-    @Unique
-    private static final BERStaticEntityInstancer INSTANCER = new BERStaticEntityInstancer(BACKEND, 10000);
 
     @Inject(at = @At("HEAD"), method = "render")
     private void ber_beforeRender(
@@ -44,9 +40,9 @@ public class LevelRendererMixin {
             boolean drawSky, 
             CallbackInfo ci) {
         
-        if (cameraRenderState.cullFrustum != null) {
+        if (cameraRenderState.cullFrustum != null && blockentitiesreimagined.client.BlockEntitiesReimaginedClient.getInstancer() != null) {
             Frustum frustum = cameraRenderState.cullFrustum;
-            INSTANCER.processAndUpload(frustum);
+            blockentitiesreimagined.client.BlockEntitiesReimaginedClient.getInstancer().processAndUpload(frustum);
         }
     }
 
@@ -59,10 +55,12 @@ public class LevelRendererMixin {
         
         // Filter out block entities that are already handled by our instanced renderer
         levelRenderState.blockEntityRenderStates.removeIf(state -> {
-            // Check if the block entity at this position is static and optimized
-            if (state.blockPos != null) {
-                // We can check if there is an optimized static renderer for this block entity type
-                // For safety and simplicity, we can query our registry
+            if (state.blockPos != null && state.blockEntityType != null) {
+                blockentitiesreimagined.client.api.IInstancedRenderer<?> renderer = 
+                    blockentitiesreimagined.client.render.immediate.BERRendererRegistry.getByType(state.blockEntityType);
+                if (renderer != null && renderer.isStatic()) {
+                    return true;
+                }
             }
             return false; 
         });
@@ -81,6 +79,8 @@ public class LevelRendererMixin {
             CallbackInfo ci) {
         
         // Dispatch the instanced draws for the static block entities
-        BACKEND.dispatchInstancedDraws(null, deltaTracker.getGameTimeDeltaTicks());
+        if (blockentitiesreimagined.client.BlockEntitiesReimaginedClient.getBackend() != null) {
+            blockentitiesreimagined.client.BlockEntitiesReimaginedClient.getBackend().dispatchInstancedDraws(frustumMatrix, deltaTracker.getGameTimeDeltaTicks());
+        }
     }
 }
